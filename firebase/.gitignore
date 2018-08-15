@@ -1,0 +1,4 @@
+/storage.rules
+/database.rules.json
+node_modules/
+serviceAccountKey.json
