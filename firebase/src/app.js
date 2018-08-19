@@ -1,8 +1,7 @@
-//import vue from "Vue"
+import Vue from "Vue"
 
 Vue.component('accordion',{
-  props: ['theme'],
-  props: ['content'],
+  props: ['theme', 'content'],
   template: `<div class="accordion" v-bind:class="theme">
     <div class="header" v-on:click="toggle">
       <slot name="header">HTML レポート</slot>
@@ -20,7 +19,7 @@ Vue.component('accordion',{
         </div>
       </div>
     </transition>
-  </div>`
+  </div>`,
   data: function(){
     return{
       show:false
