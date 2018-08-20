@@ -1,10 +1,13 @@
-import Vue from "Vue"
+//import Vue from "Vue"
+new Vue({
+  el: '#app'
+});
 
 Vue.component('accordion',{
   props: ['theme', 'content'],
   template: `<div class="accordion" v-bind:class="theme">
     <div class="header" v-on:click="toggle">
-      <slot name="header">HTML レポート</slot>
+      <slot name="header">レポート</slot>
       <i class="fa fa-2x fa-angle-down header-icon" v-bind:class="{rotate: show}"></i>
     </div>
     <transition
@@ -44,6 +47,3 @@ Vue.component('accordion',{
   }
 });
 
-new Vue({
-  el: '#app'
-});
