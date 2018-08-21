@@ -16,6 +16,7 @@ const config = {
 };
 admin.initializeApp(config);
 const storage = admin.storage().bucket();
+const db = admin.database();
 
 const today = new Date();
 console.log(today);
@@ -37,7 +38,7 @@ var Test_URL = ['https://airhorner.com/'];
         // https://github.com/GoogleChrome/lighthouse/blob/master/typings/lhr.d.ts
         // use results.report for the HTML/JSON/CSV output as a string
         // use results.artifacts for the trace/screenshots/other specific case you need (rarer)
-        return chrome.kill().then(() => results)
+        return chrome.kill().then(() => results).catch(function(e){console.log(e);})
       }).catch(function(e) {
         console.log(e); // "oh, no!"
       });
@@ -83,6 +84,8 @@ var Test_URL = ['https://airhorner.com/'];
         if(!err){
           console.log('success');
         }
+      }).catch(function(e) {
+        console.log(e); // "oh, no!"
       });
 
     }).catch(function(e) {
@@ -102,18 +105,27 @@ var Test_URL = ['https://airhorner.com/'];
       }
       //convert to Uint8Array
       var results_html_byte_U = new Uint8Array(results_html_byte);
-      console.log(results_html_byte_U);
       //upload files to storage
       // Create a storage reference from our storage service
       var split_value = value.split('/');
       //console.log(split_value[2]);
       var filename = '/html/'+ year + month + day + '/'+ hour + minute + '/' + split_value[2] + '.html';
+
+      var db_path = db.ref('html/'+year+month+day+'/'+hour+minute);
+      db_path.set({
+        file_name: split_value[2]+'.html'
+      }).catch(function(e) {
+        console.log(e); // "oh, no!"
+      });
+
       var file = storage.file(filename);
       //upload file
       file.save(results_html_byte_U,function(err){
         if(!err){
           console.log('success');
         }
+      }).catch(function(e) {
+        console.log(e); // "oh, no!"
       });
 
     }).catch(function(e) {

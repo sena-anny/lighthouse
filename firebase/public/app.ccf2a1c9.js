@@ -104,14 +104,17 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   // Override the current require with this new one
   return newRequire;
 })({"app.js":[function(require,module,exports) {
-//import Vue from "Vue"
-new Vue({
-  el: '#app'
+//import Vue from "vue"
+
+document.addEventListener("DOMContentLoaded", function (event) {
+  new Vue({
+    el: '#app'
+  });
 });
 
 Vue.component('accordion', {
   props: ['theme', 'content'],
-  template: '<div class="accordion" v-bind:class="theme">\n    <div class="header" v-on:click="toggle">\n      <slot name="header">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class="fa fa-2x fa-angle-down header-icon" v-bind:class="{rotate: show}"></i>\n    </div>\n    <transition\n      v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"\n      v-on:before-leave="onBeforeLeave" v-on:leave="onLeave">\n      <div class="body" v-show="show">\n        <div class="body-inner" v-if="content === \'html\'">\n          html\n        </div>\n        <div class="body-inner" v-else>\n          json\n        </div>\n      </div>\n    </transition>\n  </div>',
+  template: '<div class="accordion" v-bind:class="theme">\n    <div class="header" v-on:click="toggle">\n      <slot name="header">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class="fa fa-2x fa-angle-down header-icon" v-bind:class="{rotate: show}"></i>\n    </div>\n    <transition\n      v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"\n      v-on:before-leave="onBeforeLeave" v-on:leave="onLeave">\n      <div class="body" v-show="show">\n        <div class="body-inner" v-if="content === \'html\'">\n          <p> \u78BA\u8A8D\u3057\u305F\u3044\u65E5\u4ED8\u3092\u9078\u629E </p>\n\n          html\n        </div>\n        <div class="body-inner" v-else>\n          <p> \u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D </p>\n          json\n        </div>\n      </div>\n    </transition>\n  </div>',
   data: function data() {
     return {
       show: false
@@ -164,7 +167,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59240' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55632' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

@@ -1,6 +1,9 @@
-//import Vue from "Vue"
-new Vue({
-  el: '#app'
+//import Vue from "vue"
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  new Vue({
+    el: '#app'
+  });
 });
 
 Vue.component('accordion',{
@@ -15,9 +18,12 @@ Vue.component('accordion',{
       v-on:before-leave="onBeforeLeave" v-on:leave="onLeave">
       <div class="body" v-show="show">
         <div class="body-inner" v-if="content === 'html'">
+          <p> 確認したい日付を選択 </p>
+
           html
         </div>
         <div class="body-inner" v-else>
+          <p> 集計結果を確認 </p>
           json
         </div>
       </div>
