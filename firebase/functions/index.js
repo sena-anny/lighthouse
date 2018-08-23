@@ -84,10 +84,7 @@ var Test_URL = ['https://airhorner.com/'];
         if(!err){
           console.log('success');
         }
-      }).catch(function(e) {
-        console.log(e); // "oh, no!"
       });
-
     }).catch(function(e) {
       console.log(e); // "oh, no!"
     });
@@ -124,10 +121,7 @@ var Test_URL = ['https://airhorner.com/'];
         if(!err){
           console.log('success');
         }
-      }).catch(function(e) {
-        console.log(e); // "oh, no!"
       });
-
     }).catch(function(e) {
       console.log(e); // "oh, no!"
     });
