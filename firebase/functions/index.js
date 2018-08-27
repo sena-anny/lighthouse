@@ -78,6 +78,16 @@ var Test_URL = ['https://airhorner.com/'];
       var split_value = value.split('/');
       console.log(split_value[2]);
       var filename = '/json/'+ year + month + day + '/'+ hour + minute + '/' + split_value[2] + '.json';
+
+      var db_path = db.ref('json/'+year+month+day+'/'+hour+minute);
+      db_path.set({
+        file_name: split_value[2]+'.json',
+        speedindex: '10ms',
+        pwa: '50'
+      }).catch(function(e) {
+        console.log(e); // "oh, no!"
+      });
+
       var file = storage.file(filename);
       //upload file
       file.save(results_json_byte_U,function(err){
@@ -108,9 +118,10 @@ var Test_URL = ['https://airhorner.com/'];
       //console.log(split_value[2]);
       var filename = '/html/'+ year + month + day + '/'+ hour + minute + '/' + split_value[2] + '.html';
 
-      var db_path = db.ref('html/'+year+month+day+'/'+hour+minute);
+      var db_path = db.ref('html/'+year+'年'+month+'月'+day+'日'+'/'+hour+'時'+minute+'分');
       db_path.set({
-        file_name: split_value[2]+'.html'
+        domain: split_value[2],
+        path: filename
       }).catch(function(e) {
         console.log(e); // "oh, no!"
       });

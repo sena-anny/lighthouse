@@ -1,4 +1,16 @@
 //import Vue from "vue"
+import firebase from "firebase";
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyAPU0mhCLENMKPf-Hvqp5oX2emD1foll0c",
+  authDomain: "lighthouse-inspection.firebaseapp.com",
+  databaseURL: "https://lighthouse-inspection.firebaseio.com",
+  projectId: "lighthouse-inspection",
+  storageBucket: "lighthouse-inspection.appspot.com",
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+var storage = firebase.storage();
 
 document.addEventListener("DOMContentLoaded", function(event) {
   new Vue({
@@ -18,9 +30,10 @@ Vue.component('accordion',{
       v-on:before-leave="onBeforeLeave" v-on:leave="onLeave">
       <div class="body" v-show="show">
         <div class="body-inner" v-if="content === 'html'">
-          <p> 確認したい日付を選択 </p>
-
-          html
+          <div class="domain-list">リストを表示する<button v-on:click="showList">表示</button></div>
+            <div class="list" id="list"></div>
+            <div>レポート内容</div>
+            <iframe></iframe>
         </div>
         <div class="body-inner" v-else>
           <p> 集計結果を確認 </p>
@@ -50,6 +63,18 @@ Vue.component('accordion',{
     onLeave: function(el){
       el.style.height = 0
     },
+    showList: function(){
+      //firebase DBからリスト取得
+      var list = document.getElementById('list');
+      database.ref('html').once('value').then(function(snapshot){
+        console.log(snapshot.val());
+      });
+      var name = ['abc','def','hij'];
+      for (var i = name.length - 1; i >= 0; i--) {
+        list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');
+      }
+
+    }
   }
 });
 
