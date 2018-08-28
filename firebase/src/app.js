@@ -66,9 +66,38 @@ Vue.component('accordion',{
     showList: function(){
       //firebase DBからリスト取得
       var list = document.getElementById('list');
+      var html_report = [];
+      var html_path = [];
+      var gomi = [];
       database.ref('html').once('value').then(function(snapshot){
-        console.log(snapshot.val());
+        //console.log(snapshot.val());
+        var json_data = snapshot.val();
+        //console.log(json_data);
+        for(var item in json_data){
+          for(var subItem in json_data[item]){
+            //console.log(subItem);
+            if (typeof json_data[item][subItem] === 'object') {
+              for (var sub2Item in json_data[item][subItem]) {
+                  //console.log(item + ': ' + subItem + ': ' + sub2Item + ': ' + json_data[item][subItem][sub2Item]);
+                  console.log(sub2Item);
+                  console.log(json_data[item][subItem][sub2Item]);
+
+                  if (sub2Item = 'report'){
+                    html_report += json_data[item][subItem][sub2Item];
+                  }else if (sub2Item = 'path'){
+                    html_path += json_data[item][subItem][sub2Item];
+                  }else {
+                    console.log(json_data[item][subItem][sub2Item]);
+                    gomi = json_data[item][subItem][sub2Item];
+                  }
+              }
+            }
+          }
+        }
       });
+      console.log(html_report);
+      console.log(html_path);
+      console.log(gomi);
       var name = ['abc','def','hij'];
       for (var i = name.length - 1; i >= 0; i--) {
         list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');

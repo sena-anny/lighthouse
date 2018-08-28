@@ -49447,6 +49447,9 @@ module.exports = firebase;
 },{"@firebase/polyfill":"../node_modules/@firebase/polyfill/dist/index.esm.js","@firebase/app":"../node_modules/@firebase/app/dist/index.cjs.js","@firebase/auth":"../node_modules/@firebase/auth/dist/auth.esm.js","@firebase/database":"../node_modules/@firebase/database/dist/index.cjs.js","@firebase/firestore":"../node_modules/@firebase/firestore/dist/index.cjs.js","@firebase/functions":"../node_modules/@firebase/functions/dist/index.cjs.js","@firebase/messaging":"../node_modules/@firebase/messaging/dist/index.esm.js","@firebase/storage":"../node_modules/@firebase/storage/dist/index.esm.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; //import Vue from "vue"
+
+
 var _firebase = require("firebase");
 
 var _firebase2 = _interopRequireDefault(_firebase);
@@ -49460,8 +49463,7 @@ var config = {
   databaseURL: "https://lighthouse-inspection.firebaseio.com",
   projectId: "lighthouse-inspection",
   storageBucket: "lighthouse-inspection.appspot.com"
-}; //import Vue from "vue"
-
+};
 _firebase2.default.initializeApp(config);
 var database = _firebase2.default.database();
 var storage = _firebase2.default.storage();
@@ -49499,9 +49501,38 @@ Vue.component('accordion', {
     showList: function showList() {
       //firebase DBからリスト取得
       var list = document.getElementById('list');
+      var html_report = [];
+      var html_path = [];
+      var gomi = [];
       database.ref('html').once('value').then(function (snapshot) {
-        console.log(snapshot.val());
+        //console.log(snapshot.val());
+        var json_data = snapshot.val();
+        //console.log(json_data);
+        for (var item in json_data) {
+          for (var subItem in json_data[item]) {
+            //console.log(subItem);
+            if (_typeof(json_data[item][subItem]) === 'object') {
+              for (var sub2Item in json_data[item][subItem]) {
+                //console.log(item + ': ' + subItem + ': ' + sub2Item + ': ' + json_data[item][subItem][sub2Item]);
+                console.log(sub2Item);
+                console.log(json_data[item][subItem][sub2Item]);
+
+                if (sub2Item = 'report') {
+                  html_report += json_data[item][subItem][sub2Item];
+                } else if (sub2Item = 'path') {
+                  html_path += json_data[item][subItem][sub2Item];
+                } else {
+                  console.log(json_data[item][subItem][sub2Item]);
+                  gomi = json_data[item][subItem][sub2Item];
+                }
+              }
+            }
+          }
+        }
       });
+      console.log(html_report);
+      console.log(html_path);
+      console.log(gomi);
       var name = ['abc', 'def', 'hij'];
       for (var i = name.length - 1; i >= 0; i--) {
         list.insertAdjacentHTML('afterbegin', '<li>' + name[i] + '</li>');
@@ -49538,7 +49569,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49465' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55954' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

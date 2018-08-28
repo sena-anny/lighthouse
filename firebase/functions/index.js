@@ -120,7 +120,7 @@ var Test_URL = ['https://airhorner.com/'];
 
       var db_path = db.ref('html/'+year+'年'+month+'月'+day+'日'+'/'+hour+'時'+minute+'分');
       db_path.set({
-        domain: split_value[2],
+        report: year+'年'+month+'月'+day+'日'+hour+'時'+minute+'分'+split_value[2]+'レポート',
         path: filename
       }).catch(function(e) {
         console.log(e); // "oh, no!"
