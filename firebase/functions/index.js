@@ -61,17 +61,28 @@ var Test_URL = ['https://airhorner.com/'];
       console.log(value);
       // Use results!
       //js object to json
-      var results_json = JSON.stringify(results.report);
+      var json_report = results.report;
+      //console.log('json_report');
+      console.log(json_report);
+      console.log('json_report.audits');
+      console.log(json_report["audits"]);
+      console.log('json_report first-meaningful-paint');
+      console.log(json_report["audits"]["first-meaningful-paint"]["score"]);
+      console.log(json_report["audits"]["first-meaningful-paint"]["rawValue"]);
+      console.log(json_report["audits"]["speed-index"]["score"]);
+      console.log(json_report["audits"]["speed-index"]["rawValue"]);
+
+      //var results_json = JSON.stringify(results.report);
       //console.log(results_json);
       //console.log(results_json.length);
       //convert to bytefile
-      var results_json_byte = [];
-      for(var i = 0; i < results_json.length; i++){
-        results_json_byte[i] = results_json.charCodeAt(i);
-      }
+      //var results_json_byte = [];
+      //for(var i = 0; i < results_json.length; i++){
+      //  results_json_byte[i] = results_json.charCodeAt(i);
+      //}
       //console.log(results_json_byte);
       //convert to Uint8Array
-      var results_json_byte_U = new Uint8Array(results_json_byte);
+      //var results_json_byte_U = new Uint8Array(results_json_byte);
       //console.log(results_json_byte_U);
       //upload files to storage
       // Create a storage reference from our storage service
@@ -81,20 +92,21 @@ var Test_URL = ['https://airhorner.com/'];
 
       var db_path = db.ref('json/'+year+month+day+'/'+hour+minute);
       db_path.set({
+        date: year+'/'+month+'/'+day+'/'+hour+':'+minute,
         file_name: split_value[2]+'.json',
-        speedindex: '10ms',
-        pwa: '50'
+        speedindex: "10ms",
+        pwa: "50"
       }).catch(function(e) {
         console.log(e); // "oh, no!"
       });
 
-      var file = storage.file(filename);
+      //var file = storage.file(filename);
       //upload file
-      file.save(results_json_byte_U,function(err){
-        if(!err){
-          console.log('success');
-        }
-      });
+      //file.save(results_json_byte_U,function(err){
+      //  if(!err){
+      //    console.log('success');
+      //  }
+      //});
     }).catch(function(e) {
       console.log(e); // "oh, no!"
     });

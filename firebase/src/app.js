@@ -31,6 +31,10 @@ Vue.component('accordion',{
       <div class="body" v-show="show">
         <div class="body-inner" v-if="content === 'html'">
           <div class="domain-list">リストを表示する<button v-on:click="showList">表示</button></div>
+            <li v-for="list in lists">
+              {{ list.report }}
+            </li>
+
             <div class="list" id="list"></div>
             <div>レポート内容</div>
             <iframe></iframe>
@@ -44,7 +48,8 @@ Vue.component('accordion',{
   </div>`,
   data: function(){
     return{
-      show:false
+      show:false,
+      lists:[]
     };
   },
   methods: {
@@ -65,42 +70,53 @@ Vue.component('accordion',{
     },
     showList: function(){
       //firebase DBからリスト取得
-      var list = document.getElementById('list');
-      var html_report = [];
-      var html_path = [];
-      var gomi = [];
+      //var list = document.getElementById('list');
+      var html_report = {};
+      var html_path = {};
+      var gomi = {};
       database.ref('html').once('value').then(function(snapshot){
-        //console.log(snapshot.val());
         var json_data = snapshot.val();
-        //console.log(json_data);
         for(var item in json_data){
           for(var subItem in json_data[item]){
             //console.log(subItem);
             if (typeof json_data[item][subItem] === 'object') {
               for (var sub2Item in json_data[item][subItem]) {
                   //console.log(item + ': ' + subItem + ': ' + sub2Item + ': ' + json_data[item][subItem][sub2Item]);
-                  console.log(sub2Item);
-                  console.log(json_data[item][subItem][sub2Item]);
+                  //console.log(sub2Item);
+                  //console.log(json_data[item][subItem][sub2Item]);
+                  //html_report[subItem]=json_data[item][subItem][sub2Item];
+                  //console.log(html_report);
 
-                  if (sub2Item = 'report'){
-                    html_report += json_data[item][subItem][sub2Item];
-                  }else if (sub2Item = 'path'){
-                    html_path += json_data[item][subItem][sub2Item];
+                  if (sub2Item == 'report'){
+                    html_report[sub2Item] = json_data[item][subItem][sub2Item];
+                    //console.log(html_report);
+                    //lists = {sub2Item: json_data[item][subItem][sub2Item]};
+                    //this.lists.push({report:'a'});
+                    this.lists.push({report: json_data[item][subItem][sub2Item]});
+                    console.log('results');
+                  }else if (sub2Item == 'path'){
+                    html_path[sub2Item] = json_data[item][subItem][sub2Item];
+                    //this.lists.push({path:json_data[item][subItem][sub2Item]});
+                    console.log(html_path);
                   }else {
-                    console.log(json_data[item][subItem][sub2Item]);
-                    gomi = json_data[item][subItem][sub2Item];
+                    //console.log(json_data[item][subItem][sub2Item]);
+                    //gomi.push(json_data[item][subItem][sub2Item]);
+                    console.log('here!');
                   }
               }
             }
           }
         }
+        this.lists.push({report:'success!!!'});
+
+
+
       });
-      console.log(html_report);
-      console.log(html_path);
-      console.log(gomi);
+      //this.lists.push({report:'a'});
+      //this.lists.push({report: json_data[item][subItem][sub2Item]});
       var name = ['abc','def','hij'];
       for (var i = name.length - 1; i >= 0; i--) {
-        list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');
+        //list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');
       }
 
     }

@@ -49476,10 +49476,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 Vue.component('accordion', {
   props: ['theme', 'content'],
-  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <p> \u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D </p>\n          json\n        </div>\n      </div>\n    </transition>\n  </div>",
+  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <li v-for=\"list in lists\">\n              {{ list.report }}\n            </li>\n\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <p> \u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D </p>\n          json\n        </div>\n      </div>\n    </transition>\n  </div>",
   data: function data() {
     return {
-      show: false
+      show: false,
+      lists: []
     };
   },
   methods: {
@@ -49500,42 +49501,50 @@ Vue.component('accordion', {
     },
     showList: function showList() {
       //firebase DBからリスト取得
-      var list = document.getElementById('list');
-      var html_report = [];
-      var html_path = [];
-      var gomi = [];
+      //var list = document.getElementById('list');
+      var html_report = {};
+      var html_path = {};
+      var gomi = {};
       database.ref('html').once('value').then(function (snapshot) {
-        //console.log(snapshot.val());
         var json_data = snapshot.val();
-        //console.log(json_data);
         for (var item in json_data) {
           for (var subItem in json_data[item]) {
             //console.log(subItem);
             if (_typeof(json_data[item][subItem]) === 'object') {
               for (var sub2Item in json_data[item][subItem]) {
                 //console.log(item + ': ' + subItem + ': ' + sub2Item + ': ' + json_data[item][subItem][sub2Item]);
-                console.log(sub2Item);
-                console.log(json_data[item][subItem][sub2Item]);
+                //console.log(sub2Item);
+                //console.log(json_data[item][subItem][sub2Item]);
+                //html_report[subItem]=json_data[item][subItem][sub2Item];
+                //console.log(html_report);
 
-                if (sub2Item = 'report') {
-                  html_report += json_data[item][subItem][sub2Item];
-                } else if (sub2Item = 'path') {
-                  html_path += json_data[item][subItem][sub2Item];
+                if (sub2Item == 'report') {
+                  html_report[sub2Item] = json_data[item][subItem][sub2Item];
+                  //console.log(html_report);
+                  //lists = {sub2Item: json_data[item][subItem][sub2Item]};
+                  //this.lists.push({report:'a'});
+                  this.lists.push({ report: json_data[item][subItem][sub2Item] });
+                  console.log('results');
+                } else if (sub2Item == 'path') {
+                  html_path[sub2Item] = json_data[item][subItem][sub2Item];
+                  //this.lists.push({path:json_data[item][subItem][sub2Item]});
+                  console.log(html_path);
                 } else {
-                  console.log(json_data[item][subItem][sub2Item]);
-                  gomi = json_data[item][subItem][sub2Item];
+                  //console.log(json_data[item][subItem][sub2Item]);
+                  //gomi.push(json_data[item][subItem][sub2Item]);
+                  console.log('here!');
                 }
               }
             }
           }
         }
+        this.lists.push({ report: 'success!!!' });
       });
-      console.log(html_report);
-      console.log(html_path);
-      console.log(gomi);
+      //this.lists.push({report:'a'});
+      //this.lists.push({report: json_data[item][subItem][sub2Item]});
       var name = ['abc', 'def', 'hij'];
       for (var i = name.length - 1; i >= 0; i--) {
-        list.insertAdjacentHTML('afterbegin', '<li>' + name[i] + '</li>');
+        //list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');
       }
     }
   }
@@ -49569,7 +49578,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55954' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '61061' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
