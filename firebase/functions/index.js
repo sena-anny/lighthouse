@@ -61,14 +61,15 @@ var Test_URL = ['https://airhorner.com/'];
       console.log(value);
       // Use results!
       //js object to json
-      var json_report = results.report;
+      var json_report = results.lhr;
       //console.log('json_report');
-      console.log(json_report);
-      console.log('json_report.audits');
-      console.log(json_report["audits"]);
+      //console.log(json_report);
+      //console.log('json_report.audits');
+      //console.log(json_report["audits"]);
       console.log('json_report first-meaningful-paint');
       console.log(json_report["audits"]["first-meaningful-paint"]["score"]);
       console.log(json_report["audits"]["first-meaningful-paint"]["rawValue"]);
+      console.log('json_report speed-index');
       console.log(json_report["audits"]["speed-index"]["score"]);
       console.log(json_report["audits"]["speed-index"]["rawValue"]);
 
@@ -90,12 +91,13 @@ var Test_URL = ['https://airhorner.com/'];
       console.log(split_value[2]);
       var filename = '/json/'+ year + month + day + '/'+ hour + minute + '/' + split_value[2] + '.json';
 
-      var db_path = db.ref('json/'+year+month+day+'/'+hour+minute);
+      var db_path = db.ref('json/'+year+'年'+month+'月'+day+'日'+'/'+hour+'時'+minute+'分');
       db_path.set({
         date: year+'/'+month+'/'+day+'/'+hour+':'+minute,
-        file_name: split_value[2]+'.json',
-        speedindex: "10ms",
-        pwa: "50"
+        first_meaningful_paint: json_report["audits"]["first-meaningful-paint"]["score"],
+        first_meaningful_paint_value: json_report["audits"]["first-meaningful-paint"]["rawValue"],
+        speed_index: json_report["audits"]["speed-index"]["score"],
+        speed_index_value: json_report["audits"]["speed-index"]["rawValue"]
       }).catch(function(e) {
         console.log(e); // "oh, no!"
       });
@@ -132,7 +134,7 @@ var Test_URL = ['https://airhorner.com/'];
 
       var db_path = db.ref('html/'+year+'年'+month+'月'+day+'日'+'/'+hour+'時'+minute+'分');
       db_path.set({
-        report: year+'年'+month+'月'+day+'日'+hour+'時'+minute+'分'+split_value[2]+'レポート',
+        report: year+'年'+month+'月'+day+'日'+hour+'時'+minute+'分'+'の'+split_value[2]+'レポート',
         path: filename
       }).catch(function(e) {
         console.log(e); // "oh, no!"

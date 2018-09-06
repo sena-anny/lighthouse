@@ -32,7 +32,8 @@ Vue.component('accordion',{
         <div class="body-inner" v-if="content === 'html'">
           <div class="domain-list">リストを表示する<button v-on:click="showList">表示</button></div>
             <li v-for="list in lists">
-              {{ list.report }}
+              <input type="checkbox" id="a" value="a" v-model="checkedId">
+              <label for ="a">{{ list.report }}</label>
             </li>
 
             <div class="list" id="list"></div>
@@ -49,7 +50,9 @@ Vue.component('accordion',{
   data: function(){
     return{
       show:false,
-      lists:[]
+      lists:[],
+      paths:[],
+      checkedId:[]
     };
   },
   methods: {
@@ -69,12 +72,10 @@ Vue.component('accordion',{
       el.style.height = 0
     },
     showList: function(){
+      var i=0;
       //firebase DBからリスト取得
       //var list = document.getElementById('list');
-      var html_report = {};
-      var html_path = {};
-      var gomi = {};
-      database.ref('html').once('value').then(function(snapshot){
+      database.ref('html').once('value').then((snapshot) => {
         var json_data = snapshot.val();
         for(var item in json_data){
           for(var subItem in json_data[item]){
@@ -88,16 +89,17 @@ Vue.component('accordion',{
                   //console.log(html_report);
 
                   if (sub2Item == 'report'){
-                    html_report[sub2Item] = json_data[item][subItem][sub2Item];
                     //console.log(html_report);
                     //lists = {sub2Item: json_data[item][subItem][sub2Item]};
                     //this.lists.push({report:'a'});
-                    this.lists.push({report: json_data[item][subItem][sub2Item]});
-                    console.log('results');
+                    this.lists.push({report: json_data[item][subItem][sub2Item],id: i});
+                    console.log(i);
+                    i = i+1;
                   }else if (sub2Item == 'path'){
-                    html_path[sub2Item] = json_data[item][subItem][sub2Item];
+                    //html_path[sub2Item] = json_data[item][subItem][sub2Item];
                     //this.lists.push({path:json_data[item][subItem][sub2Item]});
-                    console.log(html_path);
+                    this.paths.push({path: json_data[item][subItem][sub2Item]});
+                    //console.log(html_path);
                   }else {
                     //console.log(json_data[item][subItem][sub2Item]);
                     //gomi.push(json_data[item][subItem][sub2Item]);
@@ -108,17 +110,7 @@ Vue.component('accordion',{
           }
         }
         this.lists.push({report:'success!!!'});
-
-
-
       });
-      //this.lists.push({report:'a'});
-      //this.lists.push({report: json_data[item][subItem][sub2Item]});
-      var name = ['abc','def','hij'];
-      for (var i = name.length - 1; i >= 0; i--) {
-        //list.insertAdjacentHTML('afterbegin','<li>'+name[i]+'</li>');
-      }
-
     }
   }
 });
