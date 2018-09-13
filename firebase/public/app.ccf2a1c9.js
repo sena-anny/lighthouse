@@ -49476,13 +49476,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 Vue.component('accordion', {
   props: ['theme', 'content'],
-  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <li v-for=\"list in lists\">\n              <input type=\"checkbox\" id=\"a\" value=\"a\" v-model=\"checkedId\">\n              <label for =\"a\">{{ list.report }}</label>\n            </li>\n\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <p> \u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D </p>\n          json\n        </div>\n      </div>\n    </transition>\n  </div>",
+  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <li v-for=\"list in lists\">\n              <input type=\"checkbox\" id=\"a\" value=\"a\" v-model=\"checkedId\">\n              <label for =\"a\">{{ list.report }}</label>\n            </li>\n\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <div class=\"domain-list\">\u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D<button v-on:click=\"showOutput\">\u8868\u793A</button></div>\n        </div>\n      </div>\n    </transition>\n  </div>",
   data: function data() {
     return {
       show: false,
       lists: [],
       paths: [],
-      checkedId: []
+      outputs: []
     };
   },
   methods: {
@@ -49542,6 +49542,35 @@ Vue.component('accordion', {
           }
         }
         _this.lists.push({ report: 'success!!!' });
+      });
+    },
+    showOutput: function showOutput() {
+      var _this2 = this;
+
+      database.ref('json').once('value').then(function (snapshot) {
+        var json_data = snapshot.val();
+        for (var item in json_data) {
+          for (var subItem in json_data[item]) {
+            if (_typeof(json_data[item][subItem]) === 'object') {
+              for (var sub2Item in json_data[item][subItem]) {
+                if (sub2Item == 'date') {
+                  _this2.outputs.push({ date: json_data[item][subItem][sub2Item] });
+                } else if (sub2Item == 'first_meaningful_paint') {
+                  _this2.outputs.push({ first_meaningful_paint: json_data[item][subItem][sub2Item] });
+                } else if (sub2Item == 'first_meaningful_paint_value') {
+                  _this2.outputs.push({ first_meaningful_paint_value: json_data[item][subItem][sub2Item] });
+                } else if (sub2Item == 'speed_index') {
+                  _this2.outputs.push({ speed_index: json_data[item][subItem][sub2Item] });
+                } else if (sub2Item == 'speed_index_value') {
+                  _this2.outputs.push({ speed_index_value: json_data[item][subItem][sub2Item] });
+                } else {
+                  console.log('here!');
+                }
+              }
+            }
+          }
+        }
+        _this2.lists.push({ report: 'success!!!' });
       });
     }
   }

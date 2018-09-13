@@ -41,8 +41,7 @@ Vue.component('accordion',{
             <iframe></iframe>
         </div>
         <div class="body-inner" v-else>
-          <p> 集計結果を確認 </p>
-          json
+          <div class="domain-list">集計結果を確認<button v-on:click="showOutput">表示</button></div>
         </div>
       </div>
     </transition>
@@ -52,7 +51,7 @@ Vue.component('accordion',{
       show:false,
       lists:[],
       paths:[],
-      checkedId:[]
+      outputs:[]
     };
   },
   methods: {
@@ -103,6 +102,33 @@ Vue.component('accordion',{
                   }else {
                     //console.log(json_data[item][subItem][sub2Item]);
                     //gomi.push(json_data[item][subItem][sub2Item]);
+                    console.log('here!');
+                  }
+              }
+            }
+          }
+        }
+        this.lists.push({report:'success!!!'});
+      });
+    },
+    showOutput: function(){
+      database.ref('json').once('value').then((snapshot) => {
+        var json_data = snapshot.val();
+        for(var item in json_data){
+          for(var subItem in json_data[item]){
+            if (typeof json_data[item][subItem] === 'object') {
+              for (var sub2Item in json_data[item][subItem]) {
+                  if (sub2Item == 'date'){
+                    this.outputs.push({date: json_data[item][subItem][sub2Item]});
+                  }else if (sub2Item == 'first_meaningful_paint'){
+                    this.outputs.push({first_meaningful_paint: json_data[item][subItem][sub2Item]});
+                  }else if (sub2Item == 'first_meaningful_paint_value'){
+                    this.outputs.push({first_meaningful_paint_value: json_data[item][subItem][sub2Item]});
+                  }else if (sub2Item == 'speed_index'){
+                    this.outputs.push({speed_index: json_data[item][subItem][sub2Item]});
+                  }else if (sub2Item == 'speed_index_value'){
+                    this.outputs.push({speed_index_value: json_data[item][subItem][sub2Item]});
+                  }else {
                     console.log('here!');
                   }
               }
