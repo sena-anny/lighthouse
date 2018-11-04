@@ -3,4 +3,5 @@
 node_modules/
 serviceAccountKey.json
 .cache/
+package-lock.json
 memo

@@ -32,16 +32,18 @@ Vue.component('accordion',{
         <div class="body-inner" v-if="content === 'html'">
           <div class="domain-list">リストを表示する<button v-on:click="showList">表示</button></div>
             <li v-for="list in lists">
-              <input type="checkbox" id="a" value="a" v-model="checkedId">
-              <label for ="a">{{ list.report }}</label>
+              {{ list.report }}<button v-on:click="showResult(number)">結果表示</button>
             </li>
 
             <div class="list" id="list"></div>
             <div>レポート内容</div>
-            <iframe></iframe>
+            <iframe ></iframe>
         </div>
         <div class="body-inner" v-else>
           <div class="domain-list">集計結果を確認<button v-on:click="showOutput">表示</button></div>
+          <li v-for="list in outputs">
+            {{ list }}
+          </li>
         </div>
       </div>
     </transition>
@@ -51,7 +53,8 @@ Vue.component('accordion',{
       show:false,
       lists:[],
       paths:[],
-      outputs:[]
+      outputs:[],
+      url:null
     };
   },
   methods: {
@@ -72,6 +75,7 @@ Vue.component('accordion',{
     },
     showList: function(){
       var i=0;
+      var j=0;
       //firebase DBからリスト取得
       //var list = document.getElementById('list');
       database.ref('html').once('value').then((snapshot) => {
@@ -91,17 +95,19 @@ Vue.component('accordion',{
                     //console.log(html_report);
                     //lists = {sub2Item: json_data[item][subItem][sub2Item]};
                     //this.lists.push({report:'a'});
-                    this.lists.push({report: json_data[item][subItem][sub2Item],id: i});
+                    var repo= "report["+i+"]";
+                    this.lists.push({report: json_data[item][subItem][sub2Item]});
                     console.log(i);
                     i = i+1;
                   }else if (sub2Item == 'path'){
                     //html_path[sub2Item] = json_data[item][subItem][sub2Item];
                     //this.lists.push({path:json_data[item][subItem][sub2Item]});
+                    var pa = "path["+j+"]";
                     this.paths.push({path: json_data[item][subItem][sub2Item]});
                     //console.log(html_path);
+                    j = j+1;
                   }else {
                     //console.log(json_data[item][subItem][sub2Item]);
-                    //gomi.push(json_data[item][subItem][sub2Item]);
                     console.log('here!');
                   }
               }
@@ -110,6 +116,10 @@ Vue.component('accordion',{
         }
         this.lists.push({report:'success!!!'});
       });
+    },
+    showResult: function(number){
+      var pathRef = storage.ref(this.paths.path[number]);
+      console.log(pathRef);
     },
     showOutput: function(){
       database.ref('json').once('value').then((snapshot) => {

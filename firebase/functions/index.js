@@ -94,9 +94,9 @@ var Test_URL = ['https://airhorner.com/'];
       var db_path = db.ref('json/'+year+'年'+month+'月'+day+'日'+'/'+hour+'時'+minute+'分');
       db_path.set({
         date: year+'/'+month+'/'+day+'/'+hour+':'+minute,
-        first_meaningful_paint: json_report["audits"]["first-meaningful-paint"]["score"],
+        first_meaningful_paint: json_report["audits"]["first-meaningful-paint"]["score"]*100,
         first_meaningful_paint_value: json_report["audits"]["first-meaningful-paint"]["rawValue"],
-        speed_index: json_report["audits"]["speed-index"]["score"],
+        speed_index: json_report["audits"]["speed-index"]["score"]*100,
         speed_index_value: json_report["audits"]["speed-index"]["rawValue"]
       }).catch(function(e) {
         console.log(e); // "oh, no!"

@@ -49476,13 +49476,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 Vue.component('accordion', {
   props: ['theme', 'content'],
-  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <li v-for=\"list in lists\">\n              <input type=\"checkbox\" id=\"a\" value=\"a\" v-model=\"checkedId\">\n              <label for =\"a\">{{ list.report }}</label>\n            </li>\n\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <div class=\"domain-list\">\u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D<button v-on:click=\"showOutput\">\u8868\u793A</button></div>\n        </div>\n      </div>\n    </transition>\n  </div>",
+  template: "<div class=\"accordion\" v-bind:class=\"theme\">\n    <div class=\"header\" v-on:click=\"toggle\">\n      <slot name=\"header\">\u30EC\u30DD\u30FC\u30C8</slot>\n      <i class=\"fa fa-2x fa-angle-down header-icon\" v-bind:class=\"{rotate: show}\"></i>\n    </div>\n    <transition\n      v-on:before-enter=\"onBeforeEnter\" v-on:enter=\"onEnter\"\n      v-on:before-leave=\"onBeforeLeave\" v-on:leave=\"onLeave\">\n      <div class=\"body\" v-show=\"show\">\n        <div class=\"body-inner\" v-if=\"content === 'html'\">\n          <div class=\"domain-list\">\u30EA\u30B9\u30C8\u3092\u8868\u793A\u3059\u308B<button v-on:click=\"showList\">\u8868\u793A</button></div>\n            <li v-for=\"list in lists\">\n              {{ list.report }}<button v-on:click=\"showResult(number)\">\u7D50\u679C\u8868\u793A</button>\n            </li>\n\n            <div class=\"list\" id=\"list\"></div>\n            <div>\u30EC\u30DD\u30FC\u30C8\u5185\u5BB9</div>\n            <iframe ></iframe>\n        </div>\n        <div class=\"body-inner\" v-else>\n          <div class=\"domain-list\">\u96C6\u8A08\u7D50\u679C\u3092\u78BA\u8A8D<button v-on:click=\"showOutput\">\u8868\u793A</button></div>\n          <li v-for=\"list in outputs\">\n            {{ list }}\n          </li>\n        </div>\n      </div>\n    </transition>\n  </div>",
   data: function data() {
     return {
       show: false,
       lists: [],
       paths: [],
-      outputs: []
+      outputs: [],
+      url: null
     };
   },
   methods: {
@@ -49505,6 +49506,7 @@ Vue.component('accordion', {
       var _this = this;
 
       var i = 0;
+      var j = 0;
       //firebase DBからリスト取得
       //var list = document.getElementById('list');
       database.ref('html').once('value').then(function (snapshot) {
@@ -49524,17 +49526,19 @@ Vue.component('accordion', {
                   //console.log(html_report);
                   //lists = {sub2Item: json_data[item][subItem][sub2Item]};
                   //this.lists.push({report:'a'});
-                  _this.lists.push({ report: json_data[item][subItem][sub2Item], id: i });
+                  var repo = "report[" + i + "]";
+                  _this.lists.push({ report: json_data[item][subItem][sub2Item] });
                   console.log(i);
                   i = i + 1;
                 } else if (sub2Item == 'path') {
                   //html_path[sub2Item] = json_data[item][subItem][sub2Item];
                   //this.lists.push({path:json_data[item][subItem][sub2Item]});
+                  var pa = "path[" + j + "]";
                   _this.paths.push({ path: json_data[item][subItem][sub2Item] });
                   //console.log(html_path);
+                  j = j + 1;
                 } else {
                   //console.log(json_data[item][subItem][sub2Item]);
-                  //gomi.push(json_data[item][subItem][sub2Item]);
                   console.log('here!');
                 }
               }
@@ -49543,6 +49547,10 @@ Vue.component('accordion', {
         }
         _this.lists.push({ report: 'success!!!' });
       });
+    },
+    showResult: function showResult(number) {
+      var pathRef = storage.ref(this.paths.path[number]);
+      console.log(pathRef);
     },
     showOutput: function showOutput() {
       var _this2 = this;
